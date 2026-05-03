@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="프리미엄 로또 번호 추첨기">
+    <title>Quantum Lotto - 프리미엄 로또 추첨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.05);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.5);
+            
+            /* 로또 공 색상 규정 (한국 동행복권 기준) */
+            --color-1: linear-gradient(135deg, #fde047, #f59e0b); /* 1~10 노랑 */
+            --shadow-1: rgba(245, 158, 11, 0.4);
+            
+            --color-2: linear-gradient(135deg, #93c5fd, #3b82f6); /* 11~20 파랑 */
+            --shadow-2: rgba(59, 130, 246, 0.4);
+            
+            --color-3: linear-gradient(135deg, #fca5a5, #ef4444); /* 21~30 빨강 */
+            --shadow-3: rgba(239, 68, 68, 0.4);
+            
+            --color-4: linear-gradient(135deg, #d1d5db, #6b7280); /* 31~40 회색 */
+            --shadow-4: rgba(107, 114, 128, 0.4);
+            
+            --color-5: linear-gradient(135deg, #86efac, #10b981); /* 41~45 초록 */
+            --shadow-5: rgba(16, 185, 129, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background Gradients */
+        .bg-blobs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(100px);
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: float 20s infinite ease-in-out alternate;
+        }
+
+        .blob-1 {
+            top: -10%;
+            left: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: rgba(59, 130, 246, 0.3);
+            animation-delay: 0s;
+        }
+
+        .blob-2 {
+            bottom: -10%;
+            right: -10%;
+            width: 60vw;
+            height: 60vw;
+            background: rgba(139, 92, 246, 0.3);
+            animation-delay: -5s;
+        }
+        
+        .blob-3 {
+            top: 40%;
+            left: 30%;
+            width: 40vw;
+            height: 40vw;
+            background: rgba(236, 72, 153, 0.2);
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(10%, 10%) scale(1.1); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            padding: 2rem;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
+        }
+
+        p.subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            font-weight: 300;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 3rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6);
+        }
+
+        .results-area {
+            min-height: 450px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            justify-content: center;
+        }
+
+        .empty-state {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            opacity: 0.5;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        .lotto-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .row-label {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            width: 40px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem;
+            border-radius: 12px;
+        }
+
+        .balls-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .ball {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+            opacity: 0;
+            transform: scale(0.5) rotate(-180deg);
+        }
+
+        .ball::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            height: 40%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%);
+            border-radius: 50% 50% 0 0;
+            z-index: -1;
+        }
+
+        .ball.show {
+            animation: popIn 0.6s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .range-1 { background: var(--color-1); box-shadow: 0 8px 16px var(--shadow-1), inset 0 -4px 8px rgba(0,0,0,0.2); }
+        .range-2 { background: var(--color-2); box-shadow: 0 8px 16px var(--shadow-2), inset 0 -4px 8px rgba(0,0,0,0.2); }
+        .range-3 { background: var(--color-3); box-shadow: 0 8px 16px var(--shadow-3), inset 0 -4px 8px rgba(0,0,0,0.2); }
+        .range-4 { background: var(--color-4); box-shadow: 0 8px 16px var(--shadow-4), inset 0 -4px 8px rgba(0,0,0,0.2); }
+        .range-5 { background: var(--color-5); box-shadow: 0 8px 16px var(--shadow-5), inset 0 -4px 8px rgba(0,0,0,0.2); }
+
+        .plus-sign {
+            color: var(--text-secondary);
+            font-size: 1.8rem;
+            font-weight: 300;
+            margin: 0 0.5rem;
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 1.2rem 3rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 100px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+            font-family: inherit;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-generate::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn-generate:hover::before {
+            left: 100%;
+        }
+
+        .btn-generate:active {
+            transform: translateY(1px);
+        }
+
+        .btn-generate.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.5) rotate(-90deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0);
+            }
+        }
+
+        /* Confetti Effect */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            z-index: 100;
+            pointer-events: none;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .lotto-row {
+                flex-wrap: wrap;
+                gap: 0.8rem;
+                padding: 1rem;
+            }
+            .balls-container {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+            .ball {
+                width: 44px;
+                height: 44px;
+                font-size: 1.1rem;
+            }
+            h1 {
+                font-size: 2.5rem;
+            }
+            .glass-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Quantum Lotto</h1>
+            <p class="subtitle">넥스트 레벨 행운 번호 생성기</p>
+        </header>
+
+        <div class="glass-card">
+            <div class="results-area" id="results-area">
+                <div class="empty-state">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 8v4l3 3"></path>
+                    </svg>
+                    <p>아래 버튼을 눌러 행운의 번호를 추첨해보세요!</p>
+                </div>
+            </div>
+
+            <button class="btn-generate" id="generate-btn" onclick="generateNumbers()">
+                행운 번호 추첨하기
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const btn = document.getElementById('generate-btn');
+        const resultsArea = document.getElementById('results-area');
+        
+        const colors = ['#fde047', '#93c5fd', '#fca5a5', '#d1d5db', '#86efac'];
+
+        function fireConfetti() {
+            for(let i=0; i<80; i++) {
+                const conf = document.createElement('div');
+                conf.classList.add('confetti');
+                conf.style.left = Math.random() * 100 + 'vw';
+                conf.style.top = -10 + 'px';
+                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                conf.style.width = (Math.random() * 8 + 6) + 'px';
+                conf.style.height = (Math.random() * 8 + 6) + 'px';
+                conf.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                conf.style.animationDelay = (Math.random() * 1) + 's';
+                document.body.appendChild(conf);
+                
+                setTimeout(() => conf.remove(), 5000);
+            }
+        }
+
+        async function generateNumbers() {
+            if(btn.classList.contains('loading')) return;
+            
+            btn.classList.add('loading');
+            btn.innerText = '번호 추출 중...';
+            resultsArea.innerHTML = '';
+
+            const labels = ['A', 'B', 'C', 'D', 'E'];
+            
+            for (let i = 0; i < 5; i++) {
+                // Stagger effect
+                await new Promise(r => setTimeout(r, 200));
+
+                let numbers = new Set();
+                while(numbers.size < 7) {
+                    numbers.add(Math.floor(Math.random() * 45) + 1);
+                }
+                
+                const numArr = Array.from(numbers);
+                const mainNums = numArr.slice(0, 6).sort((a,b) => a - b);
+                const bonusNum = numArr[6];
+
+                const row = document.createElement('div');
+                row.className = 'lotto-row';
+                row.style.animationDelay = `${i * 0.1}s`;
+
+                const label = document.createElement('div');
+                label.className = 'row-label';
+                label.innerText = labels[i];
+                row.appendChild(label);
+
+                const ballsContainer = document.createElement('div');
+                ballsContainer.className = 'balls-container';
+                row.appendChild(ballsContainer);
+
+                mainNums.forEach((num, index) => {
+                    const ball = createBall(num, index * 0.1 + (i * 0.2));
+                    ballsContainer.appendChild(ball);
+                });
+
+                const plus = document.createElement('div');
+                plus.className = 'plus-sign';
+                plus.innerText = '+';
+                ballsContainer.appendChild(plus);
+
+                const bonusBall = createBall(bonusNum, 6 * 0.1 + (i * 0.2));
+                ballsContainer.appendChild(bonusBall);
+
+                resultsArea.appendChild(row);
+            }
+
+            fireConfetti();
+            btn.classList.remove('loading');
+            btn.innerText = '새로운 번호 추첨하기';
+        }
+
+        function createBall(num, delay) {
+            const ball = document.createElement('div');
+            ball.className = 'ball';
+            
+            let rangeClass = '';
+            if (num <= 10) rangeClass = 'range-1';
+            else if (num <= 20) rangeClass = 'range-2';
+            else if (num <= 30) rangeClass = 'range-3';
+            else if (num <= 40) rangeClass = 'range-4';
+            else rangeClass = 'range-5';
+
+            ball.classList.add(rangeClass);
+            ball.innerText = num;
+            
+            setTimeout(() => {
+                ball.classList.add('show');
+            }, delay * 1000 + 100);
+
+            return ball;
+        }
+    </script>
+</body>
+</html>
