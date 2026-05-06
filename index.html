@@ -338,6 +338,32 @@
             opacity: 0.8;
         }
 
+        .action-btns {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-clear {
+            background: var(--glass-bg);
+            color: var(--text-secondary);
+            border: 1px solid var(--glass-border);
+            padding: 1.2rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .btn-clear:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+
         @keyframes fadeInUp {
             to {
                 opacity: 1;
@@ -627,9 +653,14 @@
                 </div>
             </div>
 
-            <button class="btn-generate" id="generate-btn" onclick="generateNumbers()">
-                행운 번호 추첨하기
-            </button>
+            <div class="action-btns">
+                <button class="btn-generate" id="generate-btn" onclick="generateNumbers()">
+                    행운 번호 추첨하기
+                </button>
+                <button class="btn-clear" id="clear-btn" onclick="clearHistory()" style="display: none;">
+                    내역 삭제
+                </button>
+            </div>
         </div>
 
         <section class="form-section">
@@ -713,37 +744,89 @@
 
     <script>
         const btn = document.getElementById('generate-btn');
+        const clearBtn = document.getElementById('clear-btn');
         const resultsArea = document.getElementById('results-area');
         const themeIcon = document.getElementById('theme-icon');
         
         const colors = ['#fde047', '#93c5fd', '#fca5a5', '#d1d5db', '#86efac'];
 
-        function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const targetTheme = currentTheme === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', targetTheme);
-            
-            if (targetTheme === 'light') {
-                themeIcon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
-            } else {
-                themeIcon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+        // Initial Load
+        window.addEventListener('DOMContentLoaded', loadHistory);
+
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('lottoHistory') || '[]');
+            if (history.length > 0) {
+                resultsArea.innerHTML = '';
+                history.forEach((data, index) => {
+                    renderLottoRow(data.mainNums, data.bonusNum, index, false);
+                });
+                clearBtn.style.display = 'block';
             }
         }
 
-        function fireConfetti() {
-            for(let i=0; i<80; i++) {
-                const conf = document.createElement('div');
-                conf.classList.add('confetti');
-                conf.style.left = Math.random() * 100 + 'vw';
-                conf.style.top = -10 + 'px';
-                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                conf.style.width = (Math.random() * 8 + 6) + 'px';
-                conf.style.height = (Math.random() * 8 + 6) + 'px';
-                conf.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                conf.style.animationDelay = (Math.random() * 1) + 's';
-                document.body.appendChild(conf);
-                
-                setTimeout(() => conf.remove(), 5000);
+        function saveToHistory(mainNums, bonusNum) {
+            const history = JSON.parse(localStorage.getItem('lottoHistory') || '[]');
+            history.unshift({ mainNums, bonusNum, date: new Date().toISOString() });
+            // Keep only last 5 entries
+            if (history.length > 5) history.pop();
+            localStorage.setItem('lottoHistory', JSON.stringify(history));
+            clearBtn.style.display = 'block';
+        }
+
+        function clearHistory() {
+            if (confirm('모든 추첨 내역을 삭제하시겠습니까?')) {
+                localStorage.removeItem('lottoHistory');
+                resultsArea.innerHTML = `
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 8v4l3 3"></path>
+                        </svg>
+                        <p>아래 버튼을 눌러 행운의 번호를 추첨해보세요!</p>
+                    </div>
+                `;
+                clearBtn.style.display = 'none';
+            }
+        }
+
+        function renderLottoRow(mainNums, bonusNum, rowIndex, animate = true) {
+            const labels = ['A', 'B', 'C', 'D', 'E'];
+            const row = document.createElement('div');
+            row.className = 'lotto-row';
+            if (animate) {
+                row.style.animationDelay = `${rowIndex * 0.1}s`;
+            } else {
+                row.style.animation = 'none';
+                row.style.opacity = '1';
+                row.style.transform = 'translateY(0)';
+            }
+
+            const label = document.createElement('div');
+            label.className = 'row-label';
+            label.innerText = labels[rowIndex % 5];
+            row.appendChild(label);
+
+            const ballsContainer = document.createElement('div');
+            ballsContainer.className = 'balls-container';
+            row.appendChild(ballsContainer);
+
+            mainNums.forEach((num, index) => {
+                const ball = createBall(num, animate ? (index * 0.1 + (rowIndex * 0.2)) : 0, animate);
+                ballsContainer.appendChild(ball);
+            });
+
+            const plus = document.createElement('div');
+            plus.className = 'plus-sign';
+            plus.innerText = '+';
+            ballsContainer.appendChild(plus);
+
+            const bonusBall = createBall(bonusNum, animate ? (6 * 0.1 + (rowIndex * 0.2)) : 0, animate);
+            ballsContainer.appendChild(bonusBall);
+
+            if (animate) {
+                resultsArea.prepend(row);
+            } else {
+                resultsArea.appendChild(row);
             }
         }
 
@@ -752,58 +835,33 @@
             
             btn.classList.add('loading');
             btn.innerText = '번호 추출 중...';
-            resultsArea.innerHTML = '';
-
-            const labels = ['A'];
             
-            for (let i = 0; i < 1; i++) {
-                // Stagger effect
-                await new Promise(r => setTimeout(r, 200));
-
-                let numbers = new Set();
-                while(numbers.size < 7) {
-                    numbers.add(Math.floor(Math.random() * 45) + 1);
-                }
-                
-                const numArr = Array.from(numbers);
-                const mainNums = numArr.slice(0, 6).sort((a,b) => a - b);
-                const bonusNum = numArr[6];
-
-                const row = document.createElement('div');
-                row.className = 'lotto-row';
-                row.style.animationDelay = `${i * 0.1}s`;
-
-                const label = document.createElement('div');
-                label.className = 'row-label';
-                label.innerText = labels[i];
-                row.appendChild(label);
-
-                const ballsContainer = document.createElement('div');
-                ballsContainer.className = 'balls-container';
-                row.appendChild(ballsContainer);
-
-                mainNums.forEach((num, index) => {
-                    const ball = createBall(num, index * 0.1 + (i * 0.2));
-                    ballsContainer.appendChild(ball);
-                });
-
-                const plus = document.createElement('div');
-                plus.className = 'plus-sign';
-                plus.innerText = '+';
-                ballsContainer.appendChild(plus);
-
-                const bonusBall = createBall(bonusNum, 6 * 0.1 + (i * 0.2));
-                ballsContainer.appendChild(bonusBall);
-
-                resultsArea.appendChild(row);
+            // If it's the first generate, clear empty state
+            if (resultsArea.querySelector('.empty-state')) {
+                resultsArea.innerHTML = '';
             }
+
+            // Stagger effect
+            await new Promise(r => setTimeout(r, 600));
+
+            let numbers = new Set();
+            while(numbers.size < 7) {
+                numbers.add(Math.floor(Math.random() * 45) + 1);
+            }
+            
+            const numArr = Array.from(numbers);
+            const mainNums = numArr.slice(0, 6).sort((a,b) => a - b);
+            const bonusNum = numArr[6];
+
+            renderLottoRow(mainNums, bonusNum, 0, true);
+            saveToHistory(mainNums, bonusNum);
 
             fireConfetti();
             btn.classList.remove('loading');
-            btn.innerText = '새로운 번호 추첨하기';
+            btn.innerText = '행운 번호 추첨하기';
         }
 
-        function createBall(num, delay) {
+        function createBall(num, delay, animate = true) {
             const ball = document.createElement('div');
             ball.className = 'ball';
             
@@ -817,9 +875,16 @@
             ball.classList.add(rangeClass);
             ball.innerText = num;
             
-            setTimeout(() => {
+            if (animate) {
+                setTimeout(() => {
+                    ball.classList.add('show');
+                }, delay * 1000 + 100);
+            } else {
                 ball.classList.add('show');
-            }, delay * 1000 + 100);
+                ball.style.animation = 'none';
+                ball.style.opacity = '1';
+                ball.style.transform = 'scale(1) rotate(0)';
+            }
 
             return ball;
         }
