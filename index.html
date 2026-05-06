@@ -88,6 +88,26 @@
             height: 24px;
         }
 
+        .share-btn {
+            position: fixed;
+            top: 2rem;
+            right: 6rem;
+            z-index: 100;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 0.8rem;
+            border-radius: 50%;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 12px var(--card-shadow);
+            color: var(--text-primary);
+        }
+
+        .share-btn svg {
+            width: 24px;
+            height: 24px;
+        }
+
         /* Animated Background Gradients */
         .bg-blobs {
             position: fixed;
@@ -673,6 +693,14 @@
         </svg>
     </button>
 
+    <button class="share-btn" id="share-btn" onclick="shareSite()" aria-label="사이트 공유">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+            <polyline points="16 6 12 2 8 6"></polyline>
+            <line x1="12" y1="2" x2="12" y2="15"></line>
+        </svg>
+    </button>
+
     <div class="bg-blobs">
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
@@ -779,9 +807,10 @@
     <footer>
         <p>&copy; 2026 Quantum Lotto. All rights reserved.</p>
         <div class="footer-links">
+            <a href="https://www.dhlottery.co.kr/common.do?method=main" target="_blank" rel="noopener">당첨 결과 확인</a>
             <a href="#">이용약관</a>
             <a href="#">개인정보처리방침</a>
-            <a href="https://formspree.io/f/mnjwvyjv">문의하기</a>
+            <a href="#partnership-form">문의하기</a>
         </div>
     </footer>
 
@@ -899,6 +928,29 @@
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 2000);
+        }
+
+        async function shareSite() {
+            const shareData = {
+                title: 'Quantum Lotto - 프리미엄 로또 추첨',
+                text: '행운의 번호를 퀀텀으로 추첨해보세요!',
+                url: window.location.href
+            };
+
+            try {
+                if (navigator.share) {
+                    await navigator.share(shareData);
+                } else {
+                    // Fallback to copy link
+                    navigator.clipboard.writeText(window.location.href);
+                    const toast = document.getElementById('toast');
+                    toast.innerText = '사이트 링크가 복사되었습니다!';
+                    showToast();
+                    setTimeout(() => { toast.innerText = '번호가 클립보드에 복사되었습니다!'; }, 2000);
+                }
+            } catch (err) {
+                console.error('공유 실패:', err);
+            }
         }
 
         async function generateNumbers() {
