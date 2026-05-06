@@ -429,6 +429,37 @@
             box-shadow: 0 25px 50px -12px var(--card-shadow);
         }
 
+        footer {
+            margin-top: 4rem;
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--glass-border);
+            width: 100%;
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
         .form-header {
             margin-bottom: 2rem;
             text-align: center;
@@ -640,6 +671,15 @@
             <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
         </section>
     </div>
+
+    <footer>
+        <p>&copy; 2026 Quantum Lotto. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="#">이용약관</a>
+            <a href="#">개인정보처리방침</a>
+            <a href="https://formspree.io/f/mnjwvyjv">문의하기</a>
+        </div>
+    </footer>
 
     <script>
         const btn = document.getElementById('generate-btn');
