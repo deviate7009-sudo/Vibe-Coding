@@ -21,7 +21,8 @@
 
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍀</text></svg>">
-    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#3b82f6">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -637,6 +638,7 @@
             border-radius: 30px;
             padding: 2rem;
             box-shadow: 0 25px 50px -12px var(--card-shadow);
+            filter: invert(100%) hue-rotate(180deg) brightness(1.5);
         }
 
         footer {
@@ -1306,6 +1308,15 @@
                 status.style.display = "block";
             }
         });
+
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('SW registered!', reg))
+                    .catch(err => console.log('SW registration failed!', err));
+            });
+        }
     </script>
     <div id="toast" class="toast">번호가 클립보드에 복사되었습니다!</div>
 </body>
