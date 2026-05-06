@@ -395,6 +395,117 @@
                 padding: 1.5rem;
             }
         }
+        /* Partnership Form Styles */
+        .form-section {
+            margin-top: 4rem;
+            animation: fadeInUp 0.8s forwards ease-out;
+        }
+
+        .form-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .form-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .form-header p {
+            color: var(--text-secondary);
+        }
+
+        .contact-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-group label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-left: 0.5rem;
+        }
+
+        .form-control {
+            background: var(--row-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1rem;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--accent-glow);
+        }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.2rem;
+            padding-right: 2.5rem;
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .btn-submit {
+            grid-column: span 2;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .btn-submit:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--accent-glow);
+        }
+
+        @media (max-width: 768px) {
+            .contact-form {
+                grid-template-columns: 1fr;
+            }
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+            .btn-submit {
+                grid-column: span 1;
+            }
+            .form-section {
+                margin-top: 3rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -432,6 +543,48 @@
                 행운 번호 추첨하기
             </button>
         </div>
+
+        <section class="form-section">
+            <div class="glass-card">
+                <div class="form-header">
+                    <h2>제휴 문의</h2>
+                    <p>Quantum Lotto와 함께할 비즈니스 파트너를 기다립니다.</p>
+                </div>
+                
+                <form action="https://formspree.io/f/mnjwvyjv" method="POST" class="contact-form">
+                    <div class="form-group">
+                        <label for="name">성함 / 기업명</label>
+                        <input type="text" id="name" name="name" class="form-control" placeholder="홍길동" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">이메일 주소</label>
+                        <input type="email" id="email" name="_replyto" class="form-control" placeholder="example@domain.com" required>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="subject">문의 유형</label>
+                        <select id="subject" name="subject" class="form-control" required>
+                            <option value="" disabled selected>문의 유형을 선택해주세요</option>
+                            <option value="광고 문의">광고 문의</option>
+                            <option value="기술 제휴">기술 제휴</option>
+                            <option value="데이터 협업">데이터 협업</option>
+                            <option value="기타">기타</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="message">문의 내용</label>
+                        <textarea id="message" name="message" class="form-control" placeholder="상세한 내용을 입력해주세요." required></textarea>
+                    </div>
+
+                    <!-- Honeypot to prevent spam -->
+                    <input type="text" name="_gotcha" style="display:none">
+                    
+                    <button type="submit" class="btn-submit">문의 보내기</button>
+                </form>
+            </div>
+        </section>
     </div>
 
     <script>
