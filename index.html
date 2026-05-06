@@ -364,6 +364,49 @@
             border-color: rgba(239, 68, 68, 0.2);
         }
 
+        .btn-copy {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            padding: 0.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-copy:hover {
+            background: var(--glass-border);
+            color: var(--accent);
+        }
+
+        .btn-copy svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--accent);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+            z-index: 1000;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
         @keyframes fadeInUp {
             to {
                 opacity: 1;
@@ -823,11 +866,39 @@
             const bonusBall = createBall(bonusNum, animate ? (6 * 0.1 + (rowIndex * 0.2)) : 0, animate);
             ballsContainer.appendChild(bonusBall);
 
+            // Add Copy Button
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'btn-copy';
+            copyBtn.title = '번호 복사';
+            copyBtn.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+            `;
+            copyBtn.onclick = () => copyToClipboard(mainNums, bonusNum);
+            row.appendChild(copyBtn);
+
             if (animate) {
                 resultsArea.prepend(row);
             } else {
                 resultsArea.appendChild(row);
             }
+        }
+
+        function copyToClipboard(mainNums, bonusNum) {
+            const text = `Quantum Lotto 행운 번호: ${mainNums.join(', ')} + 보너스 ${bonusNum}`;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast();
+            });
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
         }
 
         async function generateNumbers() {
@@ -935,5 +1006,6 @@
             }
         });
     </script>
+    <div id="toast" class="toast">번호가 클립보드에 복사되었습니다!</div>
 </body>
 </html>
