@@ -551,6 +551,35 @@
             box-shadow: 0 5px 15px var(--accent-glow);
         }
 
+        .btn-submit.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        #form-status {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            display: none;
+            font-weight: 600;
+            text-align: center;
+            grid-column: span 2;
+        }
+
+        #form-status.success {
+            display: block;
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        #form-status.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
         @media (max-width: 768px) {
             .contact-form {
                 grid-template-columns: 1fr;
@@ -610,7 +639,7 @@
                     <p>Quantum Lotto와 함께할 비즈니스 파트너를 기다립니다.</p>
                 </div>
                 
-                <form action="https://formspree.io/f/mnjwvyjv" method="POST" class="contact-form">
+                <form id="partnership-form" action="https://formspree.io/f/mnjwvyjv" method="POST" class="contact-form">
                     <div class="form-group">
                         <label for="name">성함 / 기업명</label>
                         <input type="text" id="name" name="name" class="form-control" placeholder="홍길동" required>
@@ -640,7 +669,8 @@
                     <!-- Honeypot to prevent spam -->
                     <input type="text" name="_gotcha" style="display:none">
                     
-                    <button type="submit" class="btn-submit">문의 보내기</button>
+                    <div id="form-status"></div>
+                    <button type="submit" id="submit-btn" class="btn-submit">문의 보내기</button>
                 </form>
             </div>
         </section>
@@ -793,6 +823,52 @@
 
             return ball;
         }
+
+        // AJAX Form Submission
+        const form = document.getElementById("partnership-form");
+        const submitBtn = document.getElementById("submit-btn");
+        const status = document.getElementById("form-status");
+
+        form.addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const data = new FormData(event.target);
+            
+            submitBtn.classList.add("loading");
+            submitBtn.innerText = "전송 중...";
+            status.className = "";
+            status.style.display = "none";
+
+            try {
+                const response = await fetch(event.target.action, {
+                    method: form.method,
+                    body: data,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    status.innerText = "감사합니다! 문의가 성공적으로 전송되었습니다.";
+                    status.className = "success";
+                    form.reset();
+                } else {
+                    const result = await response.json();
+                    if (Object.hasOwn(result, 'errors')) {
+                        status.innerText = result.errors.map(error => error.message).join(", ");
+                    } else {
+                        status.innerText = "앗! 전송 중에 문제가 발생했습니다.";
+                    }
+                    status.className = "error";
+                }
+            } catch (error) {
+                status.innerText = "네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
+                status.className = "error";
+            } finally {
+                submitBtn.classList.remove("loading");
+                submitBtn.innerText = "문의 보내기";
+                status.style.display = "block";
+            }
+        });
     </script>
 </body>
 </html>
