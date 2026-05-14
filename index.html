@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="프리미엄 로또 번호 추첨기">
     <title>Quantum Lotto - 프리미엄 로또 추첨</title>
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://deviate7009-sudo.github.io/Vibe-Coding/">
     <meta property="og:title" content="Quantum Lotto - 당신의 행운을 깨우는 퀀텀 엔진">
     <meta property="og:description" content="프리미엄 로또 번호 생성부터 커뮤니티, 제휴 문의까지. 오늘 당신의 행운을 확인하세요!">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1596838132731-3301c3fd4317?auto=format&fit=crop&q=80&w=1000">
+    <meta property="og:image"
+        content="https://images.unsplash.com/photo-1596838132731-3301c3fd4317?auto=format&fit=crop&q=80&w=1000">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
@@ -20,13 +22,14 @@
     <meta property="twitter:description" content="행운의 번호를 퀀텀 엔진으로 추첨해보세요!">
 
     <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍀</text></svg>">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍀</text></svg>">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#3b82f6">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8813353799436835"
-     crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script>
     <style>
         :root {
             --bg-color: #0f172a;
@@ -38,21 +41,26 @@
             --accent-glow: rgba(59, 130, 246, 0.5);
             --card-shadow: rgba(0, 0, 0, 0.5);
             --row-bg: rgba(0, 0, 0, 0.2);
-            
+
             /* 로또 공 색상 규정 (한국 동행복권 기준) */
-            --color-1: linear-gradient(135deg, #fde047, #f59e0b); /* 1~10 노랑 */
+            --color-1: linear-gradient(135deg, #fde047, #f59e0b);
+            /* 1~10 노랑 */
             --shadow-1: rgba(245, 158, 11, 0.4);
-            
-            --color-2: linear-gradient(135deg, #93c5fd, #3b82f6); /* 11~20 파랑 */
+
+            --color-2: linear-gradient(135deg, #93c5fd, #3b82f6);
+            /* 11~20 파랑 */
             --shadow-2: rgba(59, 130, 246, 0.4);
-            
-            --color-3: linear-gradient(135deg, #fca5a5, #ef4444); /* 21~30 빨강 */
+
+            --color-3: linear-gradient(135deg, #fca5a5, #ef4444);
+            /* 21~30 빨강 */
             --shadow-3: rgba(239, 68, 68, 0.4);
-            
-            --color-4: linear-gradient(135deg, #d1d5db, #6b7280); /* 31~40 회색 */
+
+            --color-4: linear-gradient(135deg, #d1d5db, #6b7280);
+            /* 31~40 회색 */
             --shadow-4: rgba(107, 114, 128, 0.4);
-            
-            --color-5: linear-gradient(135deg, #86efac, #10b981); /* 41~45 초록 */
+
+            --color-5: linear-gradient(135deg, #86efac, #10b981);
+            /* 41~45 초록 */
             --shadow-5: rgba(16, 185, 129, 0.4);
         }
 
@@ -165,7 +173,7 @@
             background: rgba(139, 92, 246, 0.3);
             animation-delay: -5s;
         }
-        
+
         .blob-3 {
             top: 40%;
             left: 30%;
@@ -176,8 +184,13 @@
         }
 
         @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(10%, 10%) scale(1.1); }
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(10%, 10%) scale(1.1);
+            }
         }
 
         .container {
@@ -251,9 +264,20 @@
         }
 
         @keyframes pulse {
-            0% { opacity: 0.7; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.05); }
-            100% { opacity: 0.7; transform: scale(1); }
+            0% {
+                opacity: 0.7;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+
+            100% {
+                opacity: 0.7;
+                transform: scale(1);
+            }
         }
 
         .lotto-row {
@@ -297,7 +321,7 @@
             font-size: 1.4rem;
             font-weight: 800;
             color: white;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
             position: relative;
             z-index: 1;
             opacity: 0;
@@ -311,7 +335,7 @@
             left: 2px;
             right: 2px;
             height: 40%;
-            background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
             border-radius: 50% 50% 0 0;
             z-index: -1;
         }
@@ -320,11 +344,30 @@
             animation: popIn 0.6s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .range-1 { background: var(--color-1); box-shadow: 0 8px 16px var(--shadow-1), inset 0 -4px 8px rgba(0,0,0,0.2); }
-        .range-2 { background: var(--color-2); box-shadow: 0 8px 16px var(--shadow-2), inset 0 -4px 8px rgba(0,0,0,0.2); }
-        .range-3 { background: var(--color-3); box-shadow: 0 8px 16px var(--shadow-3), inset 0 -4px 8px rgba(0,0,0,0.2); }
-        .range-4 { background: var(--color-4); box-shadow: 0 8px 16px var(--shadow-4), inset 0 -4px 8px rgba(0,0,0,0.2); }
-        .range-5 { background: var(--color-5); box-shadow: 0 8px 16px var(--shadow-5), inset 0 -4px 8px rgba(0,0,0,0.2); }
+        .range-1 {
+            background: var(--color-1);
+            box-shadow: 0 8px 16px var(--shadow-1), inset 0 -4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .range-2 {
+            background: var(--color-2);
+            box-shadow: 0 8px 16px var(--shadow-2), inset 0 -4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .range-3 {
+            background: var(--color-3);
+            box-shadow: 0 8px 16px var(--shadow-3), inset 0 -4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .range-4 {
+            background: var(--color-4);
+            box-shadow: 0 8px 16px var(--shadow-4), inset 0 -4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .range-5 {
+            background: var(--color-5);
+            box-shadow: 0 8px 16px var(--shadow-5), inset 0 -4px 8px rgba(0, 0, 0, 0.2);
+        }
 
         .plus-sign {
             color: var(--text-secondary);
@@ -357,7 +400,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
             transition: left 0.5s ease;
         }
 
@@ -564,6 +607,7 @@
                 opacity: 0;
                 transform: scale(0.5) rotate(-90deg);
             }
+
             100% {
                 opacity: 1;
                 transform: scale(1) rotate(0);
@@ -592,40 +636,50 @@
                 right: 1rem;
                 padding: 0.6rem;
             }
+
             .share-btn {
                 top: 1rem;
                 right: 4rem;
                 padding: 0.6rem;
             }
-            .theme-toggle svg, .share-btn svg {
+
+            .theme-toggle svg,
+            .share-btn svg {
                 width: 20px;
                 height: 20px;
             }
+
             header {
                 margin-top: 2rem;
             }
+
             .lotto-row {
                 flex-wrap: wrap;
                 gap: 0.8rem;
                 padding: 1rem;
             }
+
             .balls-container {
                 flex-wrap: wrap;
                 justify-content: center;
                 gap: 0.5rem;
             }
+
             .ball {
                 width: 44px;
                 height: 44px;
                 font-size: 1.1rem;
             }
+
             h1 {
                 font-size: 2.5rem;
             }
+
             .glass-card {
                 padding: 1.5rem;
             }
         }
+
         /* Partnership Form Styles */
         .form-section {
             margin-top: 4rem;
@@ -816,28 +870,34 @@
             .contact-form {
                 grid-template-columns: 1fr;
             }
+
             .form-group.full-width {
                 grid-column: span 1;
             }
+
             .btn-submit {
                 grid-column: span 1;
             }
+
             .form-section {
                 margin-top: 3rem;
             }
         }
     </style>
 </head>
+
 <body>
 
     <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="테마 변경">
-        <svg id="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg id="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
         </svg>
     </button>
 
     <button class="share-btn" id="share-btn" onclick="shareSite()" aria-label="사이트 공유">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
             <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
             <polyline points="16 6 12 2 8 6"></polyline>
             <line x1="12" y1="2" x2="12" y2="15"></line>
@@ -859,7 +919,8 @@
         <div class="glass-card">
             <div class="results-area" id="results-area">
                 <div class="empty-state">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round">
                         <circle cx="12" cy="12" r="10"></circle>
                         <path d="M12 8v4l3 3"></path>
                     </svg>
@@ -914,18 +975,19 @@
                     <h2>제휴 문의</h2>
                     <p>Quantum Lotto와 함께할 비즈니스 파트너를 기다립니다.</p>
                 </div>
-                
+
                 <form id="partnership-form" action="https://formspree.io/f/mnjwvyjv" method="POST" class="contact-form">
                     <div class="form-group">
                         <label for="name">성함 / 기업명</label>
                         <input type="text" id="name" name="name" class="form-control" placeholder="홍길동" required>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="email">이메일 주소</label>
-                        <input type="email" id="email" name="_replyto" class="form-control" placeholder="example@domain.com" required>
+                        <input type="email" id="email" name="_replyto" class="form-control"
+                            placeholder="example@domain.com" required>
                     </div>
-                    
+
                     <div class="form-group full-width">
                         <label for="subject">문의 유형</label>
                         <select id="subject" name="subject" class="form-control" required>
@@ -936,15 +998,16 @@
                             <option value="기타">기타</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group full-width">
                         <label for="message">문의 내용</label>
-                        <textarea id="message" name="message" class="form-control" placeholder="상세한 내용을 입력해주세요." required></textarea>
+                        <textarea id="message" name="message" class="form-control" placeholder="상세한 내용을 입력해주세요."
+                            required></textarea>
                     </div>
 
                     <!-- Honeypot to prevent spam -->
                     <input type="text" name="_gotcha" style="display:none">
-                    
+
                     <div id="form-status"></div>
                     <button type="submit" id="submit-btn" class="btn-submit">문의 보내기</button>
                 </form>
@@ -967,14 +1030,15 @@
                 this.page.identifier = window.location.pathname; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
                 };
                 */
-                (function() { // DON'T EDIT BELOW THIS LINE
-                var d = document, s = d.createElement('script');
-                s.src = 'https://quanturm-lotto.disqus.com/embed.js';
-                s.setAttribute('data-timestamp', +new Date());
-                (d.head || d.body).appendChild(s);
+                (function () { // DON'T EDIT BELOW THIS LINE
+                    var d = document, s = d.createElement('script');
+                    s.src = 'https://quanturm-lotto.disqus.com/embed.js';
+                    s.setAttribute('data-timestamp', +new Date());
+                    (d.head || d.body).appendChild(s);
                 })();
             </script>
-            <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered
+                    by Disqus.</a></noscript>
         </section>
     </div>
 
@@ -993,7 +1057,7 @@
         const clearBtn = document.getElementById('clear-btn');
         const resultsArea = document.getElementById('results-area');
         const themeIcon = document.getElementById('theme-icon');
-        
+
         const colors = ['#fde047', '#93c5fd', '#fca5a5', '#d1d5db', '#86efac'];
 
         // Initial Load
@@ -1026,7 +1090,7 @@
         }
 
         function fireConfetti() {
-            for(let i=0; i<80; i++) {
+            for (let i = 0; i < 80; i++) {
                 const conf = document.createElement('div');
                 conf.classList.add('confetti');
                 conf.style.left = Math.random() * 100 + 'vw';
@@ -1037,7 +1101,7 @@
                 conf.style.animationDuration = (Math.random() * 3 + 2) + 's';
                 conf.style.animationDelay = (Math.random() * 1) + 's';
                 document.body.appendChild(conf);
-                
+
                 setTimeout(() => conf.remove(), 5000);
             }
         }
@@ -1083,7 +1147,7 @@
         function updateStatistics() {
             const history = JSON.parse(localStorage.getItem('lottoHistory') || '[]');
             const statsSection = document.getElementById('stats-section');
-            
+
             if (history.length === 0) {
                 statsSection.style.display = 'none';
                 return;
@@ -1120,9 +1184,9 @@
             for (let i = 1; i <= 45; i++) {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'bar-wrapper';
-                
+
                 const height = (freqs[i] / maxVal) * 100;
-                
+
                 wrapper.innerHTML = `
                     <div class="bar-value">${freqs[i]}회</div>
                     <div class="bar" style="height: ${height}%"></div>
@@ -1225,11 +1289,11 @@
         }
 
         async function generateNumbers() {
-            if(btn.classList.contains('loading')) return;
-            
+            if (btn.classList.contains('loading')) return;
+
             btn.classList.add('loading');
             btn.innerText = '번호 추출 중...';
-            
+
             // If it's the first generate, clear empty state
             if (resultsArea.querySelector('.empty-state')) {
                 resultsArea.innerHTML = '';
@@ -1239,12 +1303,12 @@
             await new Promise(r => setTimeout(r, 600));
 
             let numbers = new Set();
-            while(numbers.size < 7) {
+            while (numbers.size < 7) {
                 numbers.add(Math.floor(Math.random() * 45) + 1);
             }
-            
+
             const numArr = Array.from(numbers);
-            const mainNums = numArr.slice(0, 6).sort((a,b) => a - b);
+            const mainNums = numArr.slice(0, 6).sort((a, b) => a - b);
             const bonusNum = numArr[6];
 
             renderLottoRow(mainNums, bonusNum, 0, true);
@@ -1258,7 +1322,7 @@
         function createBall(num, delay, animate = true) {
             const ball = document.createElement('div');
             ball.className = 'ball';
-            
+
             let rangeClass = '';
             if (num <= 10) rangeClass = 'range-1';
             else if (num <= 20) rangeClass = 'range-2';
@@ -1268,7 +1332,7 @@
 
             ball.classList.add(rangeClass);
             ball.innerText = num;
-            
+
             if (animate) {
                 setTimeout(() => {
                     ball.classList.add('show');
@@ -1288,10 +1352,10 @@
         const submitBtn = document.getElementById("submit-btn");
         const status = document.getElementById("form-status");
 
-        form.addEventListener("submit", async function(event) {
+        form.addEventListener("submit", async function (event) {
             event.preventDefault();
             const data = new FormData(event.target);
-            
+
             submitBtn.classList.add("loading");
             submitBtn.innerText = "전송 중...";
             status.className = "";
@@ -1340,4 +1404,5 @@
     </script>
     <div id="toast" class="toast">번호가 클립보드에 복사되었습니다!</div>
 </body>
+
 </html>
